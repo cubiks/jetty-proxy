@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+  <camelContext id="server-context" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+    <onException>
+      <exception>java.lang.Throwable</exception>
+      <handled>
+        <camel:constant>true</camel:constant>
+      </handled>
+      <to id="exceptionLogger" uri="log:com.wolterskluwer.arm.proxy?showAll=true&amp;multiline=true&amp;level=ERROR" />
+    </onException>
+
+    <route id="bridge1">
+      <from uri="jetty:http://0.0.0.0:7070/waitService?matchOnUriPrefix=true" />
+      <delay>
+        <constant>65000</constant>
+      </delay>
+      <setBody>
+        <constant>OK!</constant>
+      </setBody>
+    </route>
+  </camelContext>
+
+</beans>
