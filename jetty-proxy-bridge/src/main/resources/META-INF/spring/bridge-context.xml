@@ -10,7 +10,7 @@
       <handled>
         <camel:constant>true</camel:constant>
       </handled>
-      <to id="exceptionLogger" uri="log:com.wolterskluwer.arm.proxy?showAll=true&amp;multiline=true&amp;level=ERROR" />
+      <to id="exceptionLogger" uri="log:com.playground.camel.bridge?showAll=true&amp;multiline=true&amp;level=ERROR" />
     </onException>
 
     <route id="bridge1">

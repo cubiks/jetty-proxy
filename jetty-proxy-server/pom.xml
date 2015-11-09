@@ -7,7 +7,26 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>jetty-proxy-server</artifactId>
+  <packaging>bundle</packaging>
   <name>Jetty Proxy - Server</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>*</Import-Package>
+            <Spring-Context>
+              META-INF/spring/server-context.xml
+            </Spring-Context>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
       <dependency>

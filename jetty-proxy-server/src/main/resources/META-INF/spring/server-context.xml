@@ -10,14 +10,18 @@
       <handled>
         <camel:constant>true</camel:constant>
       </handled>
-      <to id="exceptionLogger" uri="log:com.wolterskluwer.arm.proxy?showAll=true&amp;multiline=true&amp;level=ERROR" />
+      <to id="exceptionLogger" uri="log:com.playground.camel.server?showAll=true&amp;multiline=true&amp;level=ERROR" />
     </onException>
 
     <route id="bridge1">
       <from uri="jetty:http://0.0.0.0:7070/waitService?matchOnUriPrefix=true" />
-      <delay>
-        <constant>65000</constant>
-      </delay>
+      <loop>
+        <constant>6</constant>
+        <log message="Waiting 10 seconds..." loggingLevel="INFO" />
+        <delay>
+          <constant>10000</constant>
+        </delay>
+      </loop>
       <setBody>
         <constant>OK!</constant>
       </setBody>
