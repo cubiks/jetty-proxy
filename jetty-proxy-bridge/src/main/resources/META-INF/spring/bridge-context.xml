@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring"
+  xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd
         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-  <camelContext id="bridge-context" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true">
+  <osgix:cm-properties id="bridge-cm-properties" persistent-id="com.playground.camel.jetty.bridge" />
+  <bean id="bridge-properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="locations">
+      <list>
+        <value>classpath:bridge-default.properties</value>
+      </list>
+    </property>
+    <property name="ignoreResourceNotFound" value="true" />
+    <property name="properties" ref="bridge-cm-properties" />
+    <property name="localOverride" value="true" />
+  </bean>
+
+  <camelContext id="bridge-context" xmlns="http://camel.apache.org/schema/spring" useMDCLogging="true" streamCache="false">
+    <propertyPlaceholder id="properties" location="ref:bridge-properties" />
+
     <onException>
       <exception>java.lang.Throwable</exception>
       <handled>
@@ -14,16 +30,16 @@
     </onException>
 
     <route id="bridge1">
-      <from uri="jetty:http://0.0.0.0:7071/withTimeout?matchOnUriPrefix=true&amp;continuationTimeout=3600000" />
+      <from uri="jetty:http://0.0.0.0:{{jetty.timeout.port}}/withTimeout?matchOnUriPrefix=true&amp;continuationTimeout={{jetty.continuationTimeout}}" />
       <to uri="log:com.playground.camel.bridge?showAll=true&amp;multiline=true&amp;level=INFO" />
       <!-- <to uri="jetty:http://localhost:7070/waitService?bridgeEndpoint=true&amp;throwExceptionOnFailure=false&amp;httpClient.timeout=3600000&amp;httpClient.soTimeout=3600000" /> -->
-      <to uri="jetty:http://localhost:7070/waitService?bridgeEndpoint=true&amp;throwExceptionOnFailure=false" />
+      <to uri="jetty:http://{{jetty.server.host}}:{{jetty.server.port}}/waitService?bridgeEndpoint=true&amp;throwExceptionOnFailure=false" />
     </route>
 
     <route id="bridge2">
-      <from uri="jetty:http://0.0.0.0:7072/withoutTimeout?matchOnUriPrefix=true" />
+      <from uri="jetty:http://0.0.0.0:{{jetty.notimeout.port}}/withoutTimeout?matchOnUriPrefix=true" />
       <to uri="log:com.playground.camel.bridge?showAll=true&amp;multiline=true&amp;level=INFO" />
-      <to uri="jetty:http://localhost:7070/waitService?bridgeEndpoint=true&amp;throwExceptionOnFailure=false" />
+      <to uri="jetty:http://{{jetty.server.host}}:{{jetty.server.port}}/waitService?bridgeEndpoint=true&amp;throwExceptionOnFailure=false" />
     </route>
   </camelContext>
 
