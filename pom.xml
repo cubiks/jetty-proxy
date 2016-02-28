@@ -20,6 +20,7 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Camel -->
       <dependency>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-jetty</artifactId>
@@ -31,13 +32,25 @@
         <version>${camel.version}</version>
       </dependency>
 
-      <!-- Logging -->
+      <!-- OSGI -->
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-parent</artifactId>
-        <version>1.6.6</version>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>5.0.0</version>
       </dependency>
-    </dependencies>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>5.0.0</version>
+      </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-parent</artifactId>
+      <version>1.6.6</version>
+    </dependency>
+  </dependencies>
   </dependencyManagement>
 
   <build>
